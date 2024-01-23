@@ -1,8 +1,10 @@
 import { useState } from "react";
 import validation from "../Validators/signupValidation";
 import axios from 'axios'
+
+
 const SignupForm = ({ toggleAnimation }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [error, setError]= useState('')
 
   const [values,setValues]=useState({
@@ -10,8 +12,6 @@ const SignupForm = ({ toggleAnimation }) => {
     email:'',
     password:''
   })
-  console.log([values])
- console.log(values.name)
   const handleInput = (e)=>{
       setValues(prev => ({...prev, [e.target.name]:e.target.value}))
   }
@@ -25,15 +25,14 @@ const SignupForm = ({ toggleAnimation }) => {
         if(res.data.Status === "Success"){
           alert("User Created SuccessFully")
           toggleAnimation(false);
-        }
+     }
       })
       .then(err=>{
         if(err){
         alert("Unable to Create User")
         }
       })
-      
-    }
+     }
     
   
 
@@ -109,9 +108,11 @@ const SignupForm = ({ toggleAnimation }) => {
                 <input
                   type="submit"
                   value="Sign up"
+                  
                   className="mt-20 px-8 py-4 uppercase rounded-full bg-blue-600 hover:bg-blue-400 text-white font-semibold text-center block w-full focus:outline-none focus:ring focus:ring-offset-2 focus:ring-indigo-500 focus:ring-opacity-80 cursor-pointer"
                 />
               </form>
+              
             </div>
           </div>
         </div>

@@ -1,23 +1,35 @@
-import { useState } from "react";
+import { useState} from "react";
 import Logo from "../assets/logo.png"
-import validation from "../Validators/validation"
+
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 const SigninForm = () => {
+  const navigate = useNavigate();
   const [values,setValues]=useState({
     email:'',
     password:''
   })
- 
-  const [error, setError]= useState('')
+ console.log(values)
+
   const handleInput = (e)=>{
       setValues(prev => ({...prev, [e.target.name]:e.target.value}))
   }
-
+  axios.defaults.withCredentials = true;
   const handleSubmit=(e)=>{
     e.preventDefault();
-    setError(validation(values))
-
-  }
-
+    axios.post('http://localhost:8000/login',values)
+      .then(res=>{
+        if(res.data.Status === "Success"){
+          navigate('/home')
+     }
+      })
+      .then(err=>{
+        if(err){
+        alert(res.data.Error)
+        }
+      })
+     }
   return (
     <div className="selection:bg-blue-500 selection:text-white">
       <div className="flex justify-center items-center">
@@ -51,8 +63,7 @@ const SigninForm = () => {
                   >
                     SRM Mail
                   </label>
-                  { error.email && <span className='opacity-70 top-4 right-4 text-sm p-1
-                   text-red-700 rounded-md font-thin'> {error.email}</span> } 
+                 
                 </div>
                 
                 <div className="mt-10 relative">
@@ -72,8 +83,7 @@ const SigninForm = () => {
                   >
                     Password
                   </label>
-                  { error.password && <span className='opacity-70 top-4 right-4 text-sm p-1
-                   text-red-700 rounded-md font-thin'> {error.password}</span> } 
+                 
                 </div>
 
                 <input

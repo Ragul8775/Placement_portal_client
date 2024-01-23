@@ -35,6 +35,7 @@ const LoginPage = () => {
           <SignupForm toggleAnimation={toggleAnimation}/>
         </div>
       </div>
+      
 
       <div
         id="overlay-container"
