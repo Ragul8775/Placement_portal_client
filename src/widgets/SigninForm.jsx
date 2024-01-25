@@ -3,14 +3,16 @@ import Logo from "../assets/logo.png"
 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../Validators/Authentication";
 
 const SigninForm = () => {
   const navigate = useNavigate();
+  const {setIsAuthenticated} = useAuth();
   const [values,setValues]=useState({
     email:'',
     password:''
   })
- console.log(values)
+
 
   const handleInput = (e)=>{
       setValues(prev => ({...prev, [e.target.name]:e.target.value}))
@@ -18,15 +20,21 @@ const SigninForm = () => {
   axios.defaults.withCredentials = true;
   const handleSubmit=(e)=>{
     e.preventDefault();
+    
     axios.post('http://localhost:8000/login',values)
       .then(res=>{
         if(res.data.Status === "Success"){
+          setIsAuthenticated(true);
           navigate('/home')
+     }
+     else{
+      console.log('Login failed:', response.data.Error);
      }
       })
       .then(err=>{
         if(err){
         alert(res.data.Error)
+        console.error("Login error", error);
         }
       })
      }
@@ -45,7 +53,7 @@ const SigninForm = () => {
               </div>
               </div>
 
-              <form className="mt-12" action="" method="POST" onSubmit={handleSubmit}>
+              <form className="mt-12"  onSubmit={handleSubmit}>
                 <div className="relative">
                   <input
                     id="signin-email"
