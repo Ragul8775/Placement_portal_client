@@ -8,7 +8,7 @@ const SignupForm = ({ toggleAnimation }) => {
   const [error, setError]= useState('')
 
   const [values,setValues]=useState({
-    name:'',
+    netid:'',
     email:'',
     password:''
   })
@@ -49,19 +49,19 @@ const SignupForm = ({ toggleAnimation }) => {
               <form className="mt-12" action="" method="POST" onSubmit={handleSubmit}>
                 <div className="relative">
                   <input
-                    id="name"
-                    name="name"
+                    id="netid"
+                    name="netid"
                     type="text"
                     className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-blue-500"
-                    placeholder="Name"
-                    value={values.name}
+                    placeholder="Net-Id"
+                    value={values.netid}
                     onChange={handleInput}
                   />
                   <label
-                    htmlFor="name"
+                    htmlFor="netid"
                     className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
                   >
-                    Name
+                    Net-id
                   </label>
                   { error.name && <span className='opacity-70 top-4 right-4 text-sm p-1
                    text-red-700 rounded-md font-thin'> {error.name}</span> } 

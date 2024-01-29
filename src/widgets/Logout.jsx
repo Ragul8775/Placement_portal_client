@@ -19,7 +19,7 @@ const Logout = () => {
   return (
     <button
     onClick={handleDelete}
-     className='btn bg-blue-600 text-white md:ml-8 font-semibold px-3 py-1 rounded duration-500 md:static'>Sign-Out</button>
+     className='btn bg-blue-800 hover:bg-blue-500 text-sm ml-3 text-white md:ml-8 font-semibold px-3 py-1 rounded duration-500 md:static'>Sign-Out</button>
   )
 }
 

@@ -9,8 +9,7 @@ const LoginPage = () => {
   const toggleAnimation = (status)=>{
     setIsAnimated(status)
   }
-  const overlayBg =
-    "bg-gradient-to-r from-cyan-800 via-blue-500 to-blue-800";
+  const overlayBg = "bg-gradient-to-r from-cyan-800 via-blue-500 to-blue-800";
 
   return (
     <div className="h-4/5 w-3/5 bg-white relative overflow-hidden rounded-lg">
