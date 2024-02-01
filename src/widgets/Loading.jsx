@@ -1,13 +1,11 @@
-import React from 'react'
+import React from "react";
+import ReactLoading from "react-loading";
+const Loading = ({ type, color }) => {
+  return (
+    <div className="flex  justify-center mt-[20%] ">
+      <ReactLoading type={type} color={color} height={"5%"} width={"5%"} />
+    </div>
+  );
+};
 
-const Loading = () => {
-    return (
-        <div className="flex flex-col justify-center items-center h-screen">
-          <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-32 w-32 mb-4"></div>
-          <h2 className="text-center text-gray-700 text-xl font-semibold">Loading...</h2>
-        </div>
-      );
-    
-}
-
-export default Loading
+export default Loading;
