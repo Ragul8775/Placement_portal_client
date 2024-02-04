@@ -1,4 +1,4 @@
-export const student_column = [
+export const student_column = () => [
   {
     name: "S.No",
     selector: (_, index) => index + 1, // Add 1 because index starts from 0

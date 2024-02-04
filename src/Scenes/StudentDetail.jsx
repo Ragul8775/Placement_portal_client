@@ -3,19 +3,26 @@ import Upload from "../components/Upload";
 import { Navbar } from "../components/Navbar";
 import { useAuth } from "../Validators/Authentication";
 import { student_column } from "../Columns/student_basic";
-import DataTable from "react-data-table-component";
 import axios from "axios";
 import Loading from "../widgets/Loading";
+import TableMain from "../components/TableMain";
+import Modal from "../widgets/Modal";
 
 const StudentDetail = () => {
   const { values } = useAuth();
   const netid = values.netid;
-  const columns = useMemo(() => student_column, []);
+  const columns = useMemo(() => student_column(), []);
   const [availableYears, setAvailableYears] = useState([]);
-  const [tableData, setTableData] = useState();
+  const [tableData, setTableData] = useState([]);
   const [selectedYear, setSelectedYear] = useState();
   const [loading, setLoading] = useState(false);
-  console.log(selectedYear);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedStudentDetails, setSelectedStudentDetails] = useState(null);
+
+  const handleRowClicked = (row) => {
+    setSelectedStudentDetails(row);
+    setIsModalOpen(true);
+  };
 
   useEffect(() => {
     if (netid) {
@@ -43,7 +50,6 @@ const StudentDetail = () => {
       await axios
         .get(`http://localhost:8000/studentDetails/${selectedYear}/${netid}`)
         .then((response) => {
-          console.log(response.data);
           setTableData(response.data);
           setLoading(false);
         })
@@ -52,6 +58,7 @@ const StudentDetail = () => {
         });
     }, 1000);
   };
+
   return (
     <div>
       <div>
@@ -84,14 +91,18 @@ const StudentDetail = () => {
             <Loading type={"spinningBubbles"} color={"#1E40AF"} />
           </div>
         ) : (
-          <DataTable
-            columns={columns}
-            data={tableData}
-            fixedHeader
-            pagination
-            responsive
-            className="scrollable-list"
-          ></DataTable>
+          <div>
+            <TableMain
+              column={columns}
+              data={tableData || []}
+              onRowClicked={handleRowClicked}
+            />
+            <Modal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              details={selectedStudentDetails}
+            />
+          </div>
         )}
       </div>
     </div>
