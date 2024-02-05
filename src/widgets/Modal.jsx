@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-
-const Modal = ({ isOpen, onClose, details }) => {
+import { useAuth } from "../Validators/Authentication";
+import axios from "axios";
+const Modal = ({ isOpen, onClose, details, year }) => {
   if (!isOpen) return null;
   const [edit, setEdited] = useState(true);
   function handleEdit() {
     setEdited(!edit);
   }
-  const [values, setValues] = useState({
-    reg_no: "",
+  const { values } = useAuth();
+  const [value, setValue] = useState({
+    reg_no: details.reg_no,
     full_name: "",
     section: "",
     specialization: "",
@@ -17,11 +19,36 @@ const Modal = ({ isOpen, onClose, details }) => {
     mobile_no: "",
     father: "",
     fa: "",
+    placement: "",
+    package: "",
   });
+  console.log(value);
   const handleInput = (e) => {
-    setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setValue((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-  console.log(values);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/updateStudent/${values.netid}/${details.reg_no}`,
+        value,
+        {
+          params: {
+            year: year,
+          },
+        }
+      );
+      if (response.data.Status === "Success") {
+        alert("Student details updated Successfully");
+        onClose();
+        location.reload();
+      }
+    } catch (error) {
+      console.error("Error in Updating the Student:", error);
+      alert("Failed to update Student");
+    }
+  };
+  console.log(details);
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 z-40 flex justify-center items-center"
@@ -39,10 +66,14 @@ const Modal = ({ isOpen, onClose, details }) => {
             x
           </button>
           <button
-            className="mb-4  px-2 bg-blue-500 text-white rounded hover:bg-blue-700 font-bold"
+            className={
+              edit
+                ? "mb-4  px-2 text-white rounded bg-blue-500  hover:bg-blue-700"
+                : "mb-4  px-2 text-white rounded bg-red-500  hover:bg-red-700  font-bold"
+            }
             onClick={handleEdit}
           >
-            Edit
+            {edit ? "Edit" : "Cancel"}
           </button>
         </div>
 
@@ -169,127 +200,212 @@ const Modal = ({ isOpen, onClose, details }) => {
                   />
                 </div>
               </div>
+              <div className="flex flex-col  sm:flex-row mb-1 gap-3 sm:mb-3 justify-between px-3 w-full">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Placement:
+                  </label>
+                  <input
+                    type="text"
+                    value={details.placement ? details.placement : "N/A"}
+                    readOnly
+                    className="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 cursor-default"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Package:
+                  </label>
+                  <input
+                    type="text"
+                    value={details.package ? details.package : "N/A"}
+                    readOnly
+                    className="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 cursor-default"
+                  />
+                </div>
+              </div>
             </div>
           ) : (
             <div>
-              <form>
-                <label className="block text-sm font-medium text-gray-700">
-                  Reg.No:
-                </label>
-                <input
-                  type="text"
-                  name="reg_no"
-                  placeholder={details.reg_no}
-                  onChange={handleInput}
-                  value={values.reg_no}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-                <label className="block text-sm font-medium text-gray-700">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  name="full_name"
-                  placeholder={details.full_name}
-                  onChange={handleInput}
-                  value={values.full_name}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-                <label className="block text-sm font-medium text-gray-700">
-                  D.O.B:
-                </label>
-                <input
-                  type="text"
-                  name="dob"
-                  placeholder={details.dob}
-                  onChange={handleInput}
-                  value={values.dob}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-                <label className="block text-sm font-medium text-gray-700">
-                  Section:
-                </label>
-                <input
-                  type="text"
-                  name="section"
-                  placeholder={details.section}
-                  onChange={handleInput}
-                  value={values.section}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-                <label className="block text-sm font-medium text-gray-700">
-                  Specialization:
-                </label>
-                <input
-                  type="text"
-                  name="specialization"
-                  placeholder={details.specialization}
-                  onChange={handleInput}
-                  value={values.specialization}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-                <label className="block text-sm font-medium text-gray-700">
-                  G-mail:
-                </label>
-                <input
-                  type="text"
-                  name="personal_mail"
-                  placeholder={details.personal_mail}
-                  onChange={handleInput}
-                  value={values.personal_mail}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-                <label className="block text-sm font-medium text-gray-700">
-                  SRM.Mail:
-                </label>
-                <input
-                  type="text"
-                  name="srm_mail"
-                  placeholder={details.srm_mail}
-                  onChange={handleInput}
-                  value={values.srm_mail}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-                <label className="block text-sm font-medium text-gray-700">
-                  Mobile.No:
-                </label>
-                <input
-                  type="text"
-                  name="mobile_no"
-                  placeholder={details.mobile_no}
-                  onChange={handleInput}
-                  value={values.mobile_no}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-                <label className="block text-sm font-medium text-gray-700">
-                  Father.No:
-                </label>
-                <input
-                  type="text"
-                  name="father"
-                  placeholder={details.father}
-                  onChange={handleInput}
-                  value={values.father}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-                <label className="block text-sm font-medium text-gray-700">
-                  Faculty Advisor:
-                </label>
-                <input
-                  type="text"
-                  name="fa"
-                  placeholder={details.fa}
-                  onChange={handleInput}
-                  value={values.fa}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-
-                <button
-                  type="submit"
-                  className="mt-4 py-2 px-4 bg-green-500 text-white rounded hover:bg-green-700"
-                >
-                  Save Changes
-                </button>
+              <form onSubmit={handleSubmit}>
+                <div className="flex flex-col  sm:flex-row mb-1 gap-3  sm:mb-3 justify-center px-3 w-full">
+                  <p className="p-1 bg-gray-100 rounded w-full flex justify-center">
+                    NetId:{values.netid}
+                  </p>
+                </div>
+                <div className="flex flex-col  sm:flex-row mb-1 gap-3  sm:mb-3 justify-between px-3 w-full">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Reg.No:
+                    </label>
+                    <p className="font-semibold underline opacity-80">
+                      {details.reg_no}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      name="full_name"
+                      placeholder={details.full_name}
+                      onChange={handleInput}
+                      value={value.full_name}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col  sm:flex-row mb-1 gap-3  sm:mb-3 justify-between px-3 w-full">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      D.O.B:
+                    </label>
+                    <input
+                      type="text"
+                      name="dob"
+                      placeholder={details.dob}
+                      onChange={handleInput}
+                      value={value.dob}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Section:
+                    </label>
+                    <input
+                      type="text"
+                      name="section"
+                      placeholder={details.section}
+                      onChange={handleInput}
+                      value={value.section}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col  sm:flex-row mb-1 gap-3  sm:mb-3 justify-between px-3 w-full">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Specialization:
+                    </label>
+                    <input
+                      type="text"
+                      name="specialization"
+                      placeholder={details.specialization}
+                      onChange={handleInput}
+                      value={value.specialization}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Faculty Advisor:
+                    </label>
+                    <input
+                      type="text"
+                      name="fa"
+                      placeholder={details.fa}
+                      onChange={handleInput}
+                      value={value.fa}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col  sm:flex-row mb-1 gap-3  sm:mb-3 justify-between px-3 w-full">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      SRM.Mail:
+                    </label>
+                    <input
+                      type="text"
+                      name="srm_mail"
+                      placeholder={details.srm_mail}
+                      onChange={handleInput}
+                      value={value.srm_mail}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      G-mail:
+                    </label>
+                    <input
+                      type="text"
+                      name="personal_mail"
+                      placeholder={details.personal_mail}
+                      onChange={handleInput}
+                      value={value.personal_mail}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col  sm:flex-row mb-1 gap-3  sm:mb-3 justify-between px-3 w-full">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Mobile.No:
+                    </label>
+                    <input
+                      type="text"
+                      name="mobile_no"
+                      placeholder={details.mobile_no}
+                      onChange={handleInput}
+                      value={value.mobile_no}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Father.No:
+                    </label>
+                    <input
+                      type="text"
+                      name="father"
+                      placeholder={details.father}
+                      onChange={handleInput}
+                      value={value.father}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col  sm:flex-row mb-1 gap-3  sm:mb-3 justify-between px-3 w-full">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Placement:
+                    </label>
+                    <input
+                      type="text"
+                      name="placement"
+                      placeholder={
+                        details.placement ? details.placement : "N/A"
+                      }
+                      onChange={handleInput}
+                      value={value.placement}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Package:
+                    </label>
+                    <input
+                      type="text"
+                      name="package"
+                      placeholder={details.package ? details.package : "N/A"}
+                      onChange={handleInput}
+                      value={value.package}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-center items-center ">
+                  <button
+                    type="submit"
+                    className="m-2 py-2 px-4 w-2/4 sm:w-3/4 bg-blue-800 text-white rounded hover:bg-blue-500"
+                  >
+                    Save Changes
+                  </button>
+                </div>
               </form>
             </div>
           )}

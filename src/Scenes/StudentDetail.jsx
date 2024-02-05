@@ -101,6 +101,7 @@ const StudentDetail = () => {
               isOpen={isModalOpen}
               onClose={() => setIsModalOpen(false)}
               details={selectedStudentDetails}
+              year={selectedYear}
             />
           </div>
         )}
