@@ -18,12 +18,16 @@ const StudentDetail = () => {
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStudentDetails, setSelectedStudentDetails] = useState(null);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState([]);
 
   const handleRowClicked = (row) => {
     setSelectedStudentDetails(row);
     setIsModalOpen(true);
   };
-
+  const handleSearchChange = (newSearchItem) => {
+    setSearch(newSearchItem);
+  };
   useEffect(() => {
     if (netid) {
       axios
@@ -51,6 +55,7 @@ const StudentDetail = () => {
         .get(`http://localhost:8000/studentDetails/${selectedYear}/${netid}`)
         .then((response) => {
           setTableData(response.data);
+          setFilter(response.data);
           setLoading(false);
         })
         .catch((error) => {
@@ -58,6 +63,16 @@ const StudentDetail = () => {
         });
     }, 1000);
   };
+  useEffect(() => {
+    const result = tableData.filter((item) => {
+      return (
+        item.full_name.toLowerCase().includes(search.toLowerCase()) ||
+        item.reg_no.toLowerCase().includes(search.toLowerCase()) ||
+        item.fa.toLowerCase().includes(search.toLowerCase())
+      );
+    });
+    setFilter(result);
+  }, [search, tableData]);
 
   return (
     <div>
@@ -91,11 +106,14 @@ const StudentDetail = () => {
             <Loading type={"spinningBubbles"} color={"#1E40AF"} />
           </div>
         ) : (
-          <div>
+          <div className="">
             <TableMain
               column={columns}
-              data={tableData || []}
+              data={filter || []}
               onRowClicked={handleRowClicked}
+              search={search}
+              onSearch={handleSearchChange}
+              year={selectedYear}
             />
             <Modal
               isOpen={isModalOpen}
