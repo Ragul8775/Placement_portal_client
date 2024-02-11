@@ -6,7 +6,7 @@ import Logout from "../widgets/Logout";
 export const Navbar = () => {
   let Links = [
     { id: 1, name: "Student Details", link: "/student_details" },
-    { id: 2, name: "FA Details", link: "/" },
+    { id: 2, name: "FA Details", link: "/fa_details" },
     { id: 3, name: "Company", link: "/" },
   ];
   let [open, setOpen] = useState(false);

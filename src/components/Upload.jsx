@@ -29,22 +29,30 @@ const Upload = () => {
     formData.append("file", file);
 
     try {
-      const response = await axios
-        .post("http://localhost:8000/basicDetail", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          if (res.data.Status === "Success") {
-            setShowModal(!showModal);
-            alert("Upload Successful");
-          } else {
-            throw new Error("Error in uploading file");
-          }
-        });
+      const response = await axios.post(
+        "http://localhost:8000/basicDetail",
+        formData
+      );
+      // Assuming the server sends back a JSON response with a Status property
+      if (response.data.Status === "Success") {
+        setShowModal(!showModal);
+        alert("Upload Successful");
+        window.location.reload(); // Use window.location.reload() for clarity
+      } else {
+        // Handle server-side failure (if any specific logic is needed)
+        throw new Error("Error in uploading file");
+      }
     } catch (error) {
-      console.log("Error uploading File", error);
+      console.error(
+        "Error uploading File",
+        error.response ? error.response.data : error
+      );
+      // Optionally, handle different types of errors separately
+      if (error.response && error.response.status === 400) {
+        alert("File not accepted.");
+      } else {
+        alert("An error occurred during file upload.");
+      }
     }
   };
   return (

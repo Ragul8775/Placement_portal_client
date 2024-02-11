@@ -2,7 +2,15 @@ import React from "react";
 import DataTable from "react-data-table-component";
 import { MdOutlinePersonSearch } from "react-icons/md";
 import AddStudentModal from "../widgets/AddStudentModal";
-const TableMain = ({ column, data, onRowClicked, onSearch, search, year }) => {
+const TableMain = ({
+  column,
+  data,
+  onRowClicked,
+  onSearch,
+  search,
+  year,
+  onSelectedRowsChange,
+}) => {
   const handleChange = (e) => {
     onSearch(e.target.value);
   };
@@ -12,6 +20,8 @@ const TableMain = ({ column, data, onRowClicked, onSearch, search, year }) => {
         columns={column}
         data={data}
         onRowClicked={onRowClicked}
+        onSelectedRowsChange={onSelectedRowsChange}
+        selectableRows
         fixedHeader
         pagination
         responsive

@@ -26,6 +26,14 @@ const Modal = ({ isOpen, onClose, details, year }) => {
   const handleInput = (e) => {
     setValue((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+  const placementOptions = [
+    { label: "Placed", value: "placed" },
+    { label: "Intern", value: "intern" },
+    { label: "Higher studies", value: "HigherStudies" },
+    { label: "Entrepreneur", value: "entrepreneur" },
+    { label: "Not Placed", value: "not_placed" },
+    // Add more options as needed
+  ];
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -370,19 +378,23 @@ const Modal = ({ isOpen, onClose, details, year }) => {
                 </div>
                 <div className="flex flex-col  sm:flex-row mb-1 gap-3  sm:mb-3 justify-between px-3 w-full">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-700 text-start">
                       Placement:
                     </label>
-                    <input
-                      type="text"
+                    <select
                       name="placement"
-                      placeholder={
-                        details.placement ? details.placement : "N/A"
-                      }
                       onChange={handleInput}
                       value={value.placement}
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    />
+                    >
+                      <option value="">Select Placement Status</option>{" "}
+                      {/* Optional: Placeholder option */}
+                      {placementOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">

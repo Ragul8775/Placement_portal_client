@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useAuth } from "../Validators/Authentication";
 import { IoCloseCircleOutline } from "react-icons/io5";
-
+import axios from "axios";
 const AddStudentModal = ({ year }) => {
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const { values } = useAuth();
-  const handleSubmit = () => {};
+
   const [fields, setFields] = useState({
     netid: values.netid,
     year: year,
@@ -20,12 +20,52 @@ const AddStudentModal = ({ year }) => {
     father: "",
     fa: "",
     placement: "",
+    company: "",
     package: "",
   });
+  const placementOptions = [
+    { label: "Placed", value: "placed" },
+    { label: "Intern", value: "intern" },
+    { label: "Higher studies", value: "HigherStudies" },
+    { label: "Entrepreneur", value: "entrepreneur" },
+    { label: "Not Placed", value: "not_placed" },
+    // Add more options as needed
+  ];
   const handleInput = (e) => {
     setFields((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/addStudent",
+        fields
+      );
+      console.log(response.data);
+      alert("Student Added Succesfully");
+      setFields({
+        ...fields,
+        reg_no: "",
+        full_name: "",
+        section: "",
+        specialization: "",
+        dob: "",
+        personal_mail: "",
+        srm_mail: "",
+        mobile_no: "",
+        father: "",
+        fa: "",
+        placement: "",
+        company: "",
+        package: "",
+      });
+      setShowModal(false);
+      location.reload();
+    } catch (error) {
+      console.error(error.response?.data?.message || "Failed to add student");
+      // Handle error feedback to the user
+    }
+  };
   return (
     <div>
       <h2
@@ -50,7 +90,7 @@ const AddStudentModal = ({ year }) => {
                     <IoCloseCircleOutline className="text-3xl hover:bg-gray-300 hover:pointer" />
                   </button>
                 </div>
-                <div className="relative p-4 flex">
+                <div className="relative  flex">
                   <form className=" w-full" onSubmit={handleSubmit}>
                     <div className="flex flex-col  sm:flex-row mb-1 gap-3  sm:mb-3 justify-center px-3 w-full">
                       <p className="p-1 bg-gray-100 rounded w-full flex justify-center">
@@ -68,7 +108,7 @@ const AddStudentModal = ({ year }) => {
                           placeholder="Registration Number"
                           onChange={handleInput}
                           value={fields.reg_no}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-md bg-slate-100 focus:outline-none placeholder-opacity-50"
+                          className="mt-1 block w-full p-1 rounded-md border-gray-300 shadow-md bg-slate-100 focus:outline-none placeholder-opacity-50"
                         />
                       </div>
                       <div>
@@ -81,7 +121,7 @@ const AddStudentModal = ({ year }) => {
                           placeholder="Full Name"
                           onChange={handleInput}
                           value={fields.full_name}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-md bg-slate-100 focus:outline-none placeholder-opacity-50 "
+                          className="mt-1 block w-full p-1 rounded-md border-gray-300 shadow-md bg-slate-100 focus:outline-none placeholder-opacity-50 "
                         />
                       </div>
                     </div>
@@ -96,7 +136,7 @@ const AddStudentModal = ({ year }) => {
                           placeholder="Date of Birth"
                           onChange={handleInput}
                           value={fields.dob}
-                          className=" focus:outline-none mt-1 block w-full rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
+                          className=" focus:outline-none mt-1 block w-full p-1 rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
                         />
                       </div>
                       <div>
@@ -109,7 +149,7 @@ const AddStudentModal = ({ year }) => {
                           placeholder="Section"
                           onChange={handleInput}
                           value={fields.section}
-                          className="focus:outline-none mt-1 block w-full rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
+                          className="focus:outline-none mt-1 block w-full p-1 rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
                         />
                       </div>
                     </div>
@@ -124,7 +164,7 @@ const AddStudentModal = ({ year }) => {
                           placeholder="Specialization"
                           onChange={handleInput}
                           value={fields.specialization}
-                          className="focus:outline-none mt-1 block w-full rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
+                          className="focus:outline-none mt-1 block w-full p-1 rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
                         />
                       </div>
                       <div>
@@ -137,7 +177,7 @@ const AddStudentModal = ({ year }) => {
                           placeholder="FA"
                           onChange={handleInput}
                           value={fields.fa}
-                          className="focus:outline-none mt-1 block w-full rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
+                          className="focus:outline-none mt-1 block w-full p-1 rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
                         />
                       </div>
                     </div>
@@ -152,7 +192,7 @@ const AddStudentModal = ({ year }) => {
                           placeholder="SRM Mail"
                           onChange={handleInput}
                           value={fields.srm_mail}
-                          className="focus:outline-none mt-1 block w-full rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
+                          className="focus:outline-none mt-1 block w-full p-1 rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
                         />
                       </div>
                       <div>
@@ -165,11 +205,11 @@ const AddStudentModal = ({ year }) => {
                           placeholder="Personal Mail"
                           onChange={handleInput}
                           value={fields.personal_mail}
-                          className="focus:outline-none mt-1 block w-full rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
+                          className="focus:outline-none mt-1 block p-1 w-full rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
                         />
                       </div>
                     </div>
-                    <div className="flex flex-col  sm:flex-row mb-1 gap-3  sm:mb-3 justify-between px-3 w-full">
+                    <div className="flex flex-col  sm:flex-row mb-1  gap-3  sm:mb-3 justify-between px-3 w-full">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 text-start">
                           Mobile.No:
@@ -180,7 +220,7 @@ const AddStudentModal = ({ year }) => {
                           placeholder="Mobile.No"
                           onChange={handleInput}
                           value={fields.mobile_no}
-                          className="focus:outline-none mt-1 block w-full rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
+                          className="focus:outline-none mt-1 block w-full p-1  rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
                         />
                       </div>
                       <div>
@@ -193,7 +233,7 @@ const AddStudentModal = ({ year }) => {
                           placeholder="Father.No"
                           onChange={handleInput}
                           value={fields.father}
-                          className="focus:outline-none mt-1 block w-full rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
+                          className="focus:outline-none mt-1 block w-full p-1 rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
                         />
                       </div>
                     </div>
@@ -202,14 +242,20 @@ const AddStudentModal = ({ year }) => {
                         <label className="block text-sm font-medium text-gray-700 text-start">
                           Placement:
                         </label>
-                        <input
-                          type="text"
+                        <select
                           name="placement"
-                          placeholder="Placement"
                           onChange={handleInput}
                           value={fields.placement}
-                          className="focus:outline-none mt-1 block w-full rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
-                        />
+                          className="focus:outline-none mt-1 block w-full p-1 rounded-md border-gray-300 shadow-md bg-slate-100"
+                        >
+                          <option value="">Select Placement Status</option>{" "}
+                          {/* Optional: Placeholder option */}
+                          {placementOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 text-start">
@@ -221,12 +267,27 @@ const AddStudentModal = ({ year }) => {
                           placeholder="package"
                           onChange={handleInput}
                           value={fields.package}
-                          className="focus:outline-none mt-1 block w-full rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
+                          className="focus:outline-none mt-1 block w-full p-1 rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
+                        />
+                      </div>
+                    </div>
+                    <div className="w-3/4 flex justify-center mx-auto">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 text-start">
+                          Company:
+                        </label>
+                        <input
+                          type="text"
+                          name="company"
+                          placeholder="Company"
+                          onChange={handleInput}
+                          value={fields.company}
+                          className="focus:outline-none mt-1 block w-full p-1 rounded-md border-gray-300 shadow-md bg-slate-100 placeholder-opacity-50"
                         />
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
+                    <div className="flex items-center justify-end p-2 border-t border-solid border-blueGray-200 rounded-b">
                       <button
                         className="text-red-500 hover: background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
                         type="submit"
