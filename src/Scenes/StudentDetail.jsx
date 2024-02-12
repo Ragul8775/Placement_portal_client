@@ -26,6 +26,8 @@ const StudentDetail = () => {
   const [placementStatus, setPlacementStatus] = useState("");
   const [company, setCompany] = useState("");
   const [packageValue, setPackageValue] = useState("");
+  const [section, setSection] = useState([]);
+  const [selectedSection, setSelectedSection]= useState('');
 
   const onSelectedRowsChange = (state) => {
     setSelectedRows(state.selectedRows);
@@ -71,6 +73,9 @@ const StudentDetail = () => {
   const handleSearchChange = (newSearchItem) => {
     setSearch(newSearchItem);
   };
+  const handleSectionChange = (newSectionItem)=>{
+    setSelectedSection(newSectionItem);
+  }
   useEffect(() => {
     if (netid) {
       axios
@@ -117,6 +122,15 @@ const StudentDetail = () => {
     });
     setFilter(result);
   }, [search, tableData]);
+  useEffect(() => {
+    const uniqueSections = Array.from(new Set(tableData.map(item => item.section)));
+    setSection(uniqueSections);
+  }, [tableData]);
+
+  useEffect(()=>{
+    const filteredData = selectedSection ? tableData.filter(item=>item.section===selectedSection):tableData;
+    setFilter(filteredData)
+  },[selectedSection,tableData])
 
   return (
     <div>
@@ -169,6 +183,9 @@ const StudentDetail = () => {
               onSearch={handleSearchChange}
               onSelectedRowsChange={onSelectedRowsChange}
               year={selectedYear}
+              section ={section}
+              selectedSection={selectedSection}
+              onSection ={handleSectionChange}
             />
             <Modal
               isOpen={isModalOpen}

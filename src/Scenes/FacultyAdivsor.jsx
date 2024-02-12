@@ -82,15 +82,18 @@ const FacultyAdivsor = () => {
             <Loading type={"spinningBubbles"} color={"#1E40AF"} />
           </div>
         ) : (
-          <DataTable
-            columns={columns}
-            data={faData}
-            fixedHeader
-            pagination
-            defaultSortFieldId={1}
-            responsive
-            className="scrollable-list"
-          />
+          <div className="flex flex-col justify-center items-center my-10 border-2 border-black- rounded"> 
+
+            <DataTable
+              columns={columns}
+              data={faData}
+              fixedHeader
+              pagination
+              defaultSortFieldId={1}
+              responsive
+              className="scrollable-list"
+            />
+          </div>
         )}
       </div>
     </div>

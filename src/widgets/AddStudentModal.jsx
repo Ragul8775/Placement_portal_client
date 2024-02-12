@@ -67,7 +67,7 @@ const AddStudentModal = ({ year }) => {
     }
   };
   return (
-    <div>
+    <div className="my-auto">
       <h2
         className="border font-semibold rounded-md bg-orange-800 hover:bg-orange-600 text-white flex justify-center px-3 py-1"
         onClick={() => setShowModal(true)}
