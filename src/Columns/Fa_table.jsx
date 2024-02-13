@@ -1,9 +1,9 @@
 export const Fa_column = () => [
   {
     name: "S.No",
-    selector: (_, index) => index + 1, // Add 1 because index starts from 0
+    selector: (_, index) => index + 1,
     sortable: true,
-    width: "75px", // Optional: if you want to set a specific width for this column
+    width: "75px",
   },
   {
     name: "Faculty Advisor",

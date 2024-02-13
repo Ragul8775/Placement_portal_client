@@ -24,6 +24,11 @@ export const student_column = () => [
   },
 
   {
+    name: "Section",
+    selector: (row) => row.section,
+    sortable: true,
+  },
+  {
     name: "Mail",
     selector: (row) => row.personal_mail,
     sortable: true,
@@ -31,11 +36,6 @@ export const student_column = () => [
   {
     name: "SRM.Mail",
     selector: (row) => row.srm_mail,
-    sortable: true,
-  },
-  {
-    name: "Section",
-    selector: (row) => row.section,
     sortable: true,
   },
   {

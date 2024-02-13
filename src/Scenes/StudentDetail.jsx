@@ -7,6 +7,9 @@ import axios from "axios";
 import Loading from "../widgets/Loading";
 import TableMain from "../components/TableMain";
 import Modal from "../widgets/Modal";
+import { FaFileDownload } from "react-icons/fa";
+import DownloadBtn from "../widgets/DownloadBtn";
+import { saveAs } from "file-saver";
 
 const StudentDetail = () => {
   const { values } = useAuth();
@@ -27,8 +30,47 @@ const StudentDetail = () => {
   const [company, setCompany] = useState("");
   const [packageValue, setPackageValue] = useState("");
   const [section, setSection] = useState([]);
-  const [selectedSection, setSelectedSection]= useState('');
+  const [selectedSection, setSelectedSection] = useState("");
+  const [isDownloadModal, setIsDownloadModal] = useState(false);
 
+  const handleDownlaod = async ({
+    netid,
+    selectedSection,
+    year,
+    placementStatus,
+  }) => {
+    console.log(netid, year, selectedSection, placementStatus);
+    try {
+      // Construct request params object dynamically based on available filters
+      let params = { netid, year };
+      if (selectedSection) params.section = selectedSection;
+      if (placementStatus) params.placement = placementStatus;
+
+      const response = await axios.get(
+        "http://localhost:8000/student-download",
+        {
+          params: params,
+          responseType: "blob",
+        }
+      );
+
+      // Construct filename based on available filters
+      let filenameParts = ["students"];
+      if (selectedSection) filenameParts.push(selectedSection);
+      if (placementStatus)
+        filenameParts.push(placementStatus.replace(/\s+/g, "_"));
+      filenameParts.push(year); // Assume year is always provided
+      let filename = filenameParts.join("_") + ".xlsx";
+
+      const blob = new Blob([response.data], {
+        type: "application/vnd.ms-excel",
+      });
+      saveAs(blob, filename);
+      setIsDownloadModal(false);
+    } catch (error) {
+      console.error("Error downloading the file:", error);
+    }
+  };
   const onSelectedRowsChange = (state) => {
     setSelectedRows(state.selectedRows);
     setShowUpdateButton(state.selectedRows.length > 0);
@@ -73,9 +115,9 @@ const StudentDetail = () => {
   const handleSearchChange = (newSearchItem) => {
     setSearch(newSearchItem);
   };
-  const handleSectionChange = (newSectionItem)=>{
+  const handleSectionChange = (newSectionItem) => {
     setSelectedSection(newSectionItem);
-  }
+  };
   useEffect(() => {
     if (netid) {
       axios
@@ -123,14 +165,18 @@ const StudentDetail = () => {
     setFilter(result);
   }, [search, tableData]);
   useEffect(() => {
-    const uniqueSections = Array.from(new Set(tableData.map(item => item.section)));
+    const uniqueSections = Array.from(
+      new Set(tableData.map((item) => item.section))
+    );
     setSection(uniqueSections);
   }, [tableData]);
 
-  useEffect(()=>{
-    const filteredData = selectedSection ? tableData.filter(item=>item.section===selectedSection):tableData;
-    setFilter(filteredData)
-  },[selectedSection,tableData])
+  useEffect(() => {
+    const filteredData = selectedSection
+      ? tableData.filter((item) => item.section === selectedSection)
+      : tableData;
+    setFilter(filteredData);
+  }, [selectedSection, tableData]);
 
   return (
     <div>
@@ -139,16 +185,35 @@ const StudentDetail = () => {
       </div>
       {/* upload Section */}
       <div className=" flex flex-col sm:flex-row items-center justify-between gap-2 p-2 ml-2 ">
-        <Upload />
-        <div>
-          {showUpdateButton && (
+        <div className="flex gap-2 items-center justify-between">
+          <Upload />
+          <div>
+            {showUpdateButton && (
+              <button
+                className="px-2 m-1 bg-cyan-800 hover:bg-blue-700 text-white font-bold py-2 rounded"
+                onClick={() => setShowPlacementModal(true)}
+              >
+                Update
+              </button>
+            )}
+          </div>
+          <div>
             <button
-              className="px-2 m-1 bg-cyan-800 hover:bg-blue-700 text-white font-bold py-2 rounded"
-              onClick={() => setShowPlacementModal(true)}
+              onClick={() => setIsDownloadModal(true)}
+              className="border rounded flex justify-center items-center px-4 py-2 gap-2 hover:bg-gray-800 hover:text-white"
             >
-              Update
+              <FaFileDownload />
+              <h3>Downlaod</h3>
             </button>
-          )}
+            <DownloadBtn
+              isOpen={isDownloadModal}
+              onClose={() => setIsDownloadModal(!isDownloadModal)}
+              netid={netid}
+              year={selectedYear}
+              section={section}
+              handleDownload={handleDownlaod}
+            />
+          </div>
         </div>
         <div className="border rounded-xl">
           <ul className="scrollable-list flex  rounded-xl flex-row gap-4 max-w-md overflow-x-auto shadow-inner p-1">
@@ -183,9 +248,9 @@ const StudentDetail = () => {
               onSearch={handleSearchChange}
               onSelectedRowsChange={onSelectedRowsChange}
               year={selectedYear}
-              section ={section}
+              section={section}
               selectedSection={selectedSection}
-              onSection ={handleSectionChange}
+              onSection={handleSectionChange}
             />
             <Modal
               isOpen={isModalOpen}
